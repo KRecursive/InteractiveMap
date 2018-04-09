@@ -1,0 +1,59 @@
+---
+title: "Week2 Interactive Mapping Assignment"
+author: "Ken"
+date: "April 9, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## R Markdown and Leaflet Instructions
+
+"Create a web page using R Markdown that features a map created with Leaflet.
+
+Host your webpage on either GitHub Pages, RPubs, or NeoCities.
+
+Your webpage must contain the date that you created the document, and it must contain a map created with Leaflet. We would love to see you show off your creativity!"
+
+
+## Submission
+
+Use publicly available child care data to map the licensed and registered Child Care providers of Detroit, Michigan.
+
+```{r, echo=FALSE, warning=FALSE}
+library(leaflet); library(ggmap)
+detroit <- read.csv(file = "D:/Data Products/Detroit Child Care Providers (April 2018) v2.csv", header = TRUE)
+
+careLatLong <- data.frame(
+  lat = detroit$LAT,
+  lng = detroit$LONG
+)
+
+careIcons <- makeIcon(
+  iconUrl = "http://www.greatstarttoquality.org/sites/all/themes/ecic/logo.png",
+  iconWidth = 35*215/230, iconHeight = 35,
+  iconAnchorX = 35*215/230, iconAnchorY = 35
+)
+
+careSites <- paste("License Number: ", detroit$License, " <br>", "Facility Name: ", detroit$Facility, " <br>", "Address: ", detroit$Address)
+
+```
+
+
+## April 9, 2018
+
+GitHub wouldn't host an interactive HTML document with as much data as I intended to use so I reduced it to 100 cases.
+
+```{r, echo=FALSE, warning=FALSE} 
+careLatLong %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(icon=careIcons, popup = careSites) %>%
+  setMaxBounds(lng1 = -82, lat1 = 42, lng2 = -84, lat2 = 43) %>%
+  setView(lng = mean(detroit$LONG), lat = mean(detroit$LAT), zoom = 11)
+
+```
+
